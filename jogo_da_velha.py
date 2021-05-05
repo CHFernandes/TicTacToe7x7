@@ -47,7 +47,7 @@ def verificaGanhador(board):
     #coluna
     for j in range(3):
         if(board [0][i] == board[1][i] and board [1][i] == board [2][i] and board[0][i] != branco):
-            return borad [0][i]
+            return board [0][i]
 
     #diagonal primaria
     if (board [0][0] != branco and board[0][0] == board[1][1] and board[1][1] == board[2][2]):
