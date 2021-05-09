@@ -1,38 +1,39 @@
-from jogo_da_velha import branco, token, verificaGanhador
+from jogo_da_velha import blank, token, checkWinner
 
-def movimentoIA(board, jogador):
-    possibilidades = getPosições(board)
-    melhor_valor = None
-    melhor_movimento = None
-    for possibilidade in possibilidades:
-        board[possibilidade[0]][possibilidade[1]] = token[jogador]
-        valor = minimax(board, jogador)
-        board[possibilidade[0]][possibilidade[1]] = branco
 
-        if(melhor_valor is None):
-            melhor_valor = valor
-            melhor_movimento = possibilidade
-        elif(jogador == 0):
-            if(valor > melhor_valor):
-                melhor_valor = valor
-                melhor_movimento = possibilidade
-        elif(jogador == 1):
-            if (valor < melhor_valor):
-                melhor_valor = valor
-                melhor_movimento = possibilidade
+def movimentAI(board, player):
+    possibilities = getPositions(board)
+    bestValue = None
+    bestMovement = None
+    for possibility in possibilities:
+        board[possibility[0]][possibility[1]] = token[player]
+        value = minimax(board, player, 0)
+        board[possibility[0]][possibility[1]] = blank
 
-        
+        if (bestValue is None):
+            bestValue = value
+            bestMovement = possibility
+        elif (player == 0):
+            if (value > bestValue):
+                bestValue = value
+                bestMovement = possibility
+        elif (player == 1):
+            if (value < bestValue):
+                bestValue = value
+                bestMovement = possibility
 
-    return melhor_movimento[0], melhor_movimento[1]
+    return bestMovement[0], bestMovement[1]
 
-def getPosições(board):
-    posicoes = []
-    for i in range(3):
-        for j in range(3):
-            if(board[i][j] == branco):
-                posicoes.append([i, j])
 
-    return posicoes
+def getPositions(board):
+    positions = []
+    for i in range(7):
+        for j in range(7):
+            if (board[i][j] == blank):
+                positions.append([i, j])
+
+    return positions
+
 
 score = {
     "Empate": 0,
@@ -40,28 +41,31 @@ score = {
     "O": -1
 }
 
-def minimax(board, jogador):
-    ganhador = verificaGanhador(board)
-    if(ganhador):
-        return score[ganhador]
 
-    jogador = (jogador + 1)%2
+def minimax(board, player, depth):
+    if depth > 2:
+        return 0
 
-    possibilidades = getPosições(board)
-    melhor_valor = None
-    for possibilidade in possibilidades:
-        board[possibilidade[0]][possibilidade[1]] = token[jogador]
-        valor = minimax(board, jogador)
-        board[possibilidade[0]][possibilidade[1]] = branco
+    winner = checkWinner(board)
+    if (winner):
+        return score[winner]
 
-        if(melhor_valor is None):
-            melhor_valor = valor
-        elif(jogador == 0):
-            if(valor > melhor_valor):
-                melhor_valor = valor
-        elif(jogador == 1):
-            if (valor < melhor_valor):
-                melhor_valor = valor
+    player = (player + 1) % 2
 
-    return melhor_valor
-    
+    possibilities = getPositions(board)
+    bestValue = None
+    for possibility in possibilities:
+        board[possibility[0]][possibility[1]] = token[player]
+        value = minimax(board, player, depth + 1)
+        board[possibility[0]][possibility[1]] = blank
+
+        if (bestValue is None):
+            bestValue = value
+        elif (player == 0):
+            if (value > bestValue):
+                bestValue = value
+        elif (player == 1):
+            if (value < bestValue):
+                bestValue = value
+
+    return bestValue
