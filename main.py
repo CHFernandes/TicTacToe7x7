@@ -5,8 +5,8 @@ from minimax import movimentAI
 player = 0 #controla também player 1
 board = make_board()
 print(board)
-ganhador = checkWinner(board)
-while (not ganhador):
+winner = checkWinner(board)
+while (not winner):
     printBoard(board)
     print("=========================")
 
@@ -22,9 +22,9 @@ while (not ganhador):
     else:
         print("Posição já ocupada")
     
-    ganhador = checkWinner(board)
+    winner = checkWinner(board)
 
 print("=========================")
 printBoard(board)
-print("Ganhador é o player: ", ganhador)
+print("Ganhador é o player: ", winner)
 print("=========================")
