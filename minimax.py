@@ -5,9 +5,11 @@ def movimentAI(board, player):
     possibilities = getPositions(board)
     bestValue = None
     bestMovement = None
+    alfa = -2
+    beta = 2
     for possibility in possibilities:
         board[possibility[0]][possibility[1]] = token[player]
-        value = minimax(board, player, 0)
+        value = minimax(board, player, 0, alfa, beta)
         board[possibility[0]][possibility[1]] = blank
 
         if (bestValue is None):
@@ -42,30 +44,42 @@ score = {
 }
 
 
-def minimax(board, player, depth):
-    if depth > 2:
+def minimax(board, player, depth, alfa, beta):
+    if depth > 4:
         return 0
-
     winner = checkWinner(board)
     if (winner):
         return score[winner]
 
-    player = (player + 1) % 2
-
     possibilities = getPositions(board)
-    bestValue = None
-    for possibility in possibilities:
-        board[possibility[0]][possibility[1]] = token[player]
-        value = minimax(board, player, depth + 1)
-        board[possibility[0]][possibility[1]] = blank
-
-        if (bestValue is None):
-            bestValue = value
-        elif (player == 0):
-            if (value > bestValue):
-                bestValue = value
-        elif (player == 1):
-            if (value < bestValue):
-                bestValue = value
-
-    return bestValue
+    player = (player + 1) % 2
+    if (player == 0):
+        maxValue = -2
+        for possibility in possibilities:
+            if maxValue == 1:
+                return maxValue
+            board[possibility[0]][possibility[1]] = token[player]
+            value = minimax(board, player, depth + 1, alfa, beta)
+            board[possibility[0]][possibility[1]] = blank
+            maxValue = max(maxValue, value)
+            alfa = max(value, alfa)
+            if beta <= alfa:
+                break
+            if maxValue == 1:
+                    return maxValue
+        return maxValue
+    else:
+        minValue = 2
+        for possibility in possibilities:
+            if minValue == -1:
+                return minValue
+            board[possibility[0]][possibility[1]] = token[player]
+            value = minimax(board, player, depth + 1, alfa, beta)
+            board[possibility[0]][possibility[1]] = blank
+            minValue = min(minValue, value)
+            beta = min(beta, value)
+            if beta <= alfa:
+                break
+            if minValue == -1:
+                    return minValue
+        return minValue
